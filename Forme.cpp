@@ -9,8 +9,6 @@
 #define LARGEUR 15
 #define HAUTEUR 20
 
-#pragma once
-
 
 Forme::Forme(int largeur, int hauteur, int type) {
     this->largeurForme = largeur;
@@ -205,13 +203,13 @@ bool Forme::deplacementPossible() {
 bool Forme::possibleGrille(Grille g) {
     for (int j = 0; j < N; j++) {
         if (g.matGrille[ligne + N - 1][colonne + j] == 1) {
-            // Vérifie si la case en dessous de la forme est déjà occupée
+            // Vï¿½rifie si la case en dessous de la forme est dï¿½jï¿½ occupï¿½e
             if (g.matGrille[ligne + N][colonne + j] == 1) {
                 return false;
             }
         }
     }
-    // Vérifie si la forme touche le bas de la grille
+    // Vï¿½rifie si la forme touche le bas de la grille
     if (ligne + N - 1 >= HAUTEUR - 1) {
         return false;
     }
@@ -245,7 +243,7 @@ Grille Forme::deplacerBas(Grille g) {
         ligne++;
     }
     else {
-        std::cout << "bord touché";
+        std::cout << "bord touchï¿½";
     }
 
     return g;
@@ -264,13 +262,13 @@ bool Forme::possibleMat_d() {
 bool Forme::possibleGrille_d(Grille g) {
     for (int j = 0; j < N; j++) {
         if (g.matGrille[ligne + N - 1][colonne + j] == 1 || g.matGrille[ligne + N - 1][colonne + j] == -1) {
-            // Vérifie si la case en dessous de la forme est déjà occupée
+            // Vï¿½rifie si la case en dessous de la forme est dï¿½jï¿½ occupï¿½e
             if (g.matGrille[ligne + N][colonne + j] == 1 || g.matGrille[ligne + N][colonne + j] == -1) {
                 return false;
             }
         }
     }
-    // Vérifie si la forme touche le bas de la grille
+    // Vï¿½rifie si la forme touche le bas de la grille
     if (ligne + N - 1 >= HAUTEUR - 1) {
         return false;
     }
@@ -318,20 +316,21 @@ bool Forme::possibleMat_g() {
 
 
 bool Forme::possibleGrille_g(Grille g) {
-    for (int j = N; j >= 0; j--) {
-        if (g.matGrille[ligne + N - 1][colonne + j] == 1) {
-            // Vérifie si la case en dessous de la forme est déjà occupée
-            if (g.matGrille[ligne + N][colonne + j] == 1) {
-                return false;
+    // VÃ©rifier si on peut dÃ©placer Ã  gauche (colonne > 0)
+    if (colonne <= 0) return false;
+    
+    // VÃ©rifier s'il y a des obstacles Ã  gauche
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (matForme[i][j] == 1) {
+                if (g.matGrille[ligne + i][colonne + j - 1] == 1 ||
+                    g.matGrille[ligne + i][colonne + j - 1] == -1) {
+                    return false;
+                }
+                break; // On a trouvÃ© le premier "1" dans cette ligne
             }
         }
     }
-
-    // Vérifie si la forme touche le bas de la grille
-    if (ligne + N - 1 >= HAUTEUR - 1) {
-        return false;
-    }
-
     return true;
 }
 
@@ -339,26 +338,26 @@ bool Forme::possibleGrille_g(Grille g) {
 Grille Forme::deplacerGauche(Grille g) {
     if (possibleMat_g()) {
         for (int i = 0; i < N; i++) {
-            for (int j = N - 2; j >= 0; j--) {
-                matForme[i][j - 1] = matForme[i][j];
+            for (int j = 1; j < N; j++) { // Commencer Ã  j=1, pas N-2
+                matForme[i][j-1] = matForme[i][j];
             }
         }
         for (int i = 0; i < N; i++) {
-            matForme[i][0] = 0;
-
+            matForme[i][N-1] = 0; // Effacer la derniÃ¨re colonne, pas la premiÃ¨re
         }
     }
+    
     if (possibleGrille_g(g)) {
         for (int i = 0; i < N; i++) {
-            for (int j = N - 1; j >= 0; j--) {
-                g.matGrille[ligne + i][colonne + j + 1] = g.matGrille[ligne + i][colonne + j];
+            for (int j = 1; j < N; j++) {
+                g.matGrille[ligne + i][colonne + j - 1] = g.matGrille[ligne + i][colonne + j];
             }
         }
         for (int i = 0; i < N; i++) {
-            g.matGrille[ligne-i][colonne] = 0;
+            g.matGrille[ligne + i][colonne + N - 1] = 0;
         }
-
-        colonne++;
+        
+        colonne--; // DÃ©crÃ©menter, pas incrÃ©menter
     }
     return g;
 }

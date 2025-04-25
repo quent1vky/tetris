@@ -1,17 +1,12 @@
 #ifndef FORME_H
 #define FORME_H
 
-
-#include "Grille.h"
-#include <stdio.h>
-
-
+// Déclaration anticipée
+class Grille;
 
 #define N 4
 
-
-#pragma once
-class Forme{
+class Forme {
 
 private:
     int largeurForme;
@@ -21,7 +16,7 @@ private:
 
 public:
     int type;
-    bool matForme[N][N];
+    int matForme[N][N];
 
 
     Forme(int largeurForme, int hauteurForme, int type);
